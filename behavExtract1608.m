@@ -16,10 +16,8 @@ dataFoot = struct2cell(contFoot); % convert to cell to access the responses
 dataFoot = squeeze(dataFoot); % get 2D instead of 3D structure
 dataFoot = cell2mat(dataFoot); % convert to double to create array of foot responses (same order as trials)
 
-randTrialsFoot = struct2cell(load(files(65).name)); % this is not in the same order as dataFoot!! - sorted for now - the problem won't be there once I have all ppts
-                                                    % row 37 of structure
-                                                    % contains foot trials
-                                                    % for now!! 
+randTrialsFoot = struct2cell(load(files(65).name)); 
+                                                    
 randTrialsFoot = cell2mat(randTrialsFoot);  % conver to double to create array of foot trials
 
 trialsFoot1 = randTrialsFoot(1:2,:); % all this will be unnecessary once I have the whole dataset, some data are on cookie and I need to copy it
@@ -122,7 +120,7 @@ clear i;
 avgFreqFoot = mean(percFeltFootFreq,2); % total average
 sDevFreqFoot = std(percFeltFootFreq);
 %% white noise foot
-dataWnFootOnly = zeros(32,8);  % create an array to store 18 (2blocks x ppt - 18 rows, 9 ppts) x 8 (8 trials x block - 8 columns)
+dataWnFootOnly = zeros(32,8);  % create an array to store 32 (2blocks x ppt - 32 rows, 16 ppts) x 8 (8 trials x block - 8 columns)
 
 for i = 1:size(dataWnFoot,1)
 dataWnFootOnly(i,:) = rmmissing(dataWnFoot(i,:)); % remove NaN values to only get array with freq reponses
