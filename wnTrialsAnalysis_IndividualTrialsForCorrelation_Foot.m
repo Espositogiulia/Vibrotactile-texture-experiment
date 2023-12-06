@@ -317,15 +317,8 @@ results.bl_avgALL_chanavg_avg=bl_avg_tp;
 
 %% Topographical plot (baseline-corrected data)
 
-%find harmonics that were significant (ttest) in at least one condition
-idx_base=[];
-idx_oddball=[];
-for i=1:8;
-    idx_base=[idx_base results.base_freq_dx(find(lwdataFoot(i).ttest_base_freq))];
-    idx_oddball=[idx_oddball results.oddball_freq_dx(find(lwdataFoot(i).ttest_oddball_freq))];
-end;
-idx_base=sort(unique(idx_base));
-idx_oddball=sort(unique(idx_oddball));
+
+% load idx_base and idx_oddball (original harmonics)
 
 results.idx_base=idx_base;
 results.idx_oddball=idx_oddball;
@@ -333,7 +326,8 @@ results.idx_oddball=idx_oddball;
 %average (baseline-corrected) signal across the relevant harmonics
 for i=1:8;
     lwdataFoot(i).base_signal=lwdataFoot(i).bl_avg(:,idx_base);
-    lwdataFoot(i).oddball_signal=lwdataFoot(i).bl_avg(:,idx_oddball);
+    lwdataFoot(i).oddball_signal=lwdataFoot(i).bl_avg(:,idx_oddball); % idx_sig_oddball --> loaded from folder
+    % same harmonics as in original analysis.
     lwdataFoot(i).mean_base_signal=mean(lwdataFoot(i).base_signal,2);
     lwdataFoot(i).mean_oddball_signal=mean(lwdataFoot(i).oddball_signal,2);
 end;
@@ -351,32 +345,32 @@ for i = 1:8
 mean_oddball_foot(i).mean_oddball_signal_individual =  lwdataFoot(i).mean_oddball_signal_individual;
 end
 
-save('mean_oddball_foot_1509.mat','mean_oddball_foot');
+save('mean_oddball_foot_2410.mat','mean_oddball_foot');
 
-%% NEXT, without WN2
-mean_oddball_wn2excl_foot(1).mean_oddball_foot = ...
-    mean_oddball_foot(1).mean_oddball_signal_individual;
+%% average (baseline-corrected) signal across the relevant harmonics for each
+%participant and without averaging across channels
 
-mean_oddball_wn2excl_foot(2).mean_oddball_foot = ...
-    mean_oddball_foot(3).mean_oddball_signal_individual;
+for i=1:8;
+    lwdataFoot(i).base_signal_individual_chan=lwdataFoot(i).bl_data(:,:,idx_base);
+    lwdataFoot(i).oddball_signal_individual_chan=lwdataFoot(i).bl_data(:,:,idx_oddball);
+    lwdataFoot(i).mean_base_signal_individual_chan=mean(lwdataFoot(i).base_signal_individual_chan,3);
+    lwdataFoot(i).mean_oddball_signal_individual_chan=mean(lwdataFoot(i).oddball_signal_individual_chan,3);
+end;
 
-mean_oddball_wn2excl_foot(3).mean_oddball_foot = ...
-    mean_oddball_foot(4).mean_oddball_signal_individual;
+%% weighted average
+load foot_template
 
-mean_oddball_wn2excl_foot(4).mean_oddball_foot = ...
-    mean_oddball_foot(5).mean_oddball_signal_individual;
+for i = 1:8
+for j=1:17
+    lwdataFoot(i).foot_noise_oddball_foot_template(j)=sum(lwdataFoot(i).mean_oddball_signal_individual_chan(j,:)'.*foot_template);
+end
+end
 
-mean_oddball_wn2excl_foot(5).mean_oddball_foot = ...
-    mean_oddball_foot(6).mean_oddball_signal_individual;
+for i = 1:8
+    foot_noise_oddball_foot_template(i,:) = lwdataFoot(i).foot_noise_oddball_foot_template;
+end
 
-mean_oddball_wn2excl_foot(6).mean_oddball_foot = ...
-    mean_oddball_foot(7).mean_oddball_signal_individual;
-
-mean_oddball_wn2excl_foot(7).mean_oddball_foot = ...
-    mean_oddball_foot(8).mean_oddball_signal_individual;
-
-save('mean_oddball_wn2excl_foot_1509.mat','mean_oddball_wn2excl_foot');
-%%
+%% load individual Hilbert-tranformed A and B stimuli
 for n=1:8;
     [Ah Ad]=CLW_load(['hilTranA' num2str(n)]);
     [Bh Bd]=CLW_load(['hilTranB' num2str(n)]);
@@ -386,11 +380,11 @@ for n=1:8;
     
     D(n,:)=abs(B-A);
     Dsum(n)=sum(D(n,:));
-    Dsum_onset(n)=sum(D(n,1:1837));
+    Dsum_onset(n)=sum(D(n,1:2210));
 end;
 % 
 Dsum = repmat(Dsum,17,1);
-Dsum_onset= repmat(Dsum_onset,17,1);
+% Dsum_onset= repmat(Dsum_onset,17,1);
 
 wn1Foot = mean_oddball_foot(1).mean_oddball_signal_individual;
 wn2Foot = mean_oddball_foot(2).mean_oddball_signal_individual;
@@ -403,20 +397,7 @@ wn8Foot = mean_oddball_foot(8).mean_oddball_signal_individual;
 oddball_allFoot = [wn1Foot wn2Foot wn3Foot wn4Foot wn5Foot wn6Foot wn7Foot wn8Foot];
 oddball_foot_excl_Wn2 = [wn1Foot wn3Foot wn4Foot wn5Foot wn6Foot wn7Foot wn8Foot];
 
-Dsum_excl_wn2 = Dsum(1,[1 3:8]);
-Dsum_excl_wn2  = repmat(Dsum_excl_wn2, 17,1);
-Dsum_onset_excl_wn2 = Dsum_onset(1,[1 3:8]);
-Dsum_onset_excl_wn2  = repmat(Dsum_onset_excl_wn2, 17,1);
-%% correlation with wn2
-[RFootwn2,PFootwn2]= corrcoef(Dsum(:,:),oddball_allFoot(:,:));
-[RFootwn2_onset,PFootwn2_onset]= corrcoef(Dsum_onset(:,:),oddball_allFoot(:,:));
 
-%% correlation without wn2
-[RFoot_excl_wn2,PFoot_excl_wn2]= corrcoef(Dsum(:,[1 3:8]),oddball_allFoot(:,[1 3:8]));
-[RFoot_onset_excl_wn2,PFoot_onset_excl_wn2]= corrcoef(Dsum_onset(:,[1 3:8]),oddball_allFoot(:,[1 3:8]));
-% 
-% 
  %% save workspace
- 
-filename = 'analyisis_individual_wn_trials_foot_1509.mat';
+filename = 'analyisis_individual_wn_trials_foot_2410.mat';
 save (filename, '-v7.3');
