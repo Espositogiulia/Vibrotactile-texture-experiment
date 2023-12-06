@@ -293,13 +293,9 @@ results.bl_avgALL_chanavg_avg=bl_avg_tp;
 %find harmonics that were significant (ttest) in at least one condition
 idx_base=[];
 idx_oddball=[];
-for i=1:8;
-    idx_base=[idx_base results.base_freq_dx(find(lwdataHand(i).ttest_base_freq))];
-    idx_oddball=[idx_oddball results.oddball_freq_dx(find(lwdataHand(i).ttest_oddball_freq))];
-end;
-idx_base=sort(unique(idx_base));
-idx_oddball=sort(unique(idx_oddball));
 
+% load idx_base and idx_oddball from folder (they are the same as those
+% selected in the main analysis)
 results.idx_base=idx_base;
 results.idx_oddball=idx_oddball;
 
@@ -318,43 +314,135 @@ for i=1:8;
     lwdataHand(i).oddball_signal_individual=lwdataHand(i).chanavg_bl(:,idx_oddball);
     lwdataHand(i).mean_base_signal_individual=mean(lwdataHand(i).base_signal_individual,2);
     lwdataHand(i).mean_oddball_signal_individual=mean(lwdataHand(i).oddball_signal_individual,2);
-end;
-
-for i = 1:8
+    
+    for i = 1:8
 mean_oddball_hand(i).mean_oddball_hand =  lwdataHand(i).mean_oddball_signal_individual;
 end
 
-save('mean_oddball_hand_1509.mat','mean_oddball_hand');
+end;
+
+save('mean_oddball_hand_2410.mat','mean_oddball_hand');
+
+%% average (baseline-corrected) signal across the relevant harmonics for each
+%participant and without averaging across channels
+
+for i=1:8;
+    lwdataHand(i).base_signal_individual_chan=lwdataHand(i).bl_data(:,:,idx_base);
+    lwdataHand(i).oddball_signal_individual_chan=lwdataHand(i).bl_data(:,:,idx_oddball);
+    lwdataHand(i).mean_base_signal_individual_chan=mean(lwdataHand(i).base_signal_individual_chan,3);
+    lwdataHand(i).mean_oddball_signal_individual_chan=mean(lwdataHand(i).oddball_signal_individual_chan,3);
+end;
+
+%% weighted average of oddball responses
+for i = 1:8
+for j=1:17
+    lwdataHand(i).hand_noise_oddball_hand_template(j)=sum(lwdataHand(i).mean_oddball_signal_individual_chan(j,:)'.*hand_template);
+end
+end
+
+for i = 1:8
+    hand_noise_oddball_hand_template(i,:) = lwdataHand(i).hand_noise_oddball_hand_template;
+end
+
+
+% %% average (baseline-corrected) signal across the clusters of harmonics
+% %across participants and without averaging across channels
+% for i=1:8;
+%     lwdataHand(i).oddball_signal_individual_chan_mean_cluster1=mean(mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([1:4])),3),1);
+%     lwdataHand(i).oddball_signal_individual_chan_mean_cluster2=mean(mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([5:8])),3),1);
+%     lwdataHand(i).oddball_signal_individual_chan_mean_cluster3=mean(mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([9:12])),3),1);
+%     lwdataHand(i).oddball_signal_individual_chan_mean_cluster4=mean(mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([13:16])),3),1);
+%     lwdataHand(i).oddball_signal_individual_chan_mean_cluster5=mean(mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([17:20])),3),1);
+% end;
+% 
+% % average clusters across sequences
+% 
+% for i = 1:8
+% all_seq_cluster1(i,:,:) = lwdataHand(i).oddball_signal_individual_chan_mean_cluster1(:,:);
+% end
+% 
+% all_seq_cluster1 = squeeze(all_seq_cluster1);
+% mean_cluster1 = mean(all_seq_cluster1);
+% 
+% for i = 1:8
+% all_seq_cluster2(i,:,:) = lwdataHand(i).oddball_signal_individual_chan_mean_cluster2(:,:);
+% end
+% 
+% all_seq_cluster2 = squeeze(all_seq_cluster2);
+% mean_cluster2 = mean(all_seq_cluster2);
+% 
+% for i = 1:8
+% all_seq_cluster3(i,:,:) = lwdataHand(i).oddball_signal_individual_chan_mean_cluster3(:,:);
+% end
+% 
+% all_seq_cluster3 = squeeze(all_seq_cluster3);
+% mean_cluster3 = mean(all_seq_cluster3);
+% 
+% for i = 1:8
+% all_seq_cluster4(i,:,:) = lwdataHand(i).oddball_signal_individual_chan_mean_cluster4(:,:);
+% end
+% 
+% all_seq_cluster4 = squeeze(all_seq_cluster4);
+% mean_cluster4 = mean(all_seq_cluster4);
+% 
+% for i = 1:8
+% all_seq_cluster5(i,:,:) = lwdataHand(i).oddball_signal_individual_chan_mean_cluster5(:,:);
+% end
+% 
+% all_seq_cluster5 = squeeze(all_seq_cluster5);
+% mean_cluster5 = mean(all_seq_cluster5);
+% 
+%         figure;
+%  CLW_topoplot_vector(lwdataHand(i).header,mean_cluster1);
+%  
+%     figure;
+%  CLW_topoplot_vector(lwdataHand(i).header,mean_cluster2);
+%  
+%     figure;
+%  CLW_topoplot_vector(lwdataHand(i).header,mean_cluster3);
+%  
+%     figure;
+%  CLW_topoplot_vector(lwdataHand(i).header,mean_cluster4);
+%  
+%     figure;
+%  CLW_topoplot_vector(lwdataHand(i).header,mean_cluster5);
+% 
+% 
+% 
+% %average (baseline-corrected) signal across the clusters of harmonics
+% %for each participant and without averaging across channels
+% for i=1:8;
+%     lwdataHand(i).oddball_signal_individual_chan_cluster1=mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([1:4])),3);
+%     lwdataHand(i).oddball_signal_individual_chan_cluster2=mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([5:8])),3);
+%     lwdataHand(i).oddball_signal_individual_chan_cluster3=mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([9:12])),3);
+%     lwdataHand(i).oddball_signal_individual_chan_cluster4=mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([13:16])),3);
+%     lwdataHand(i).oddball_signal_individual_chan_cluster5=mean(lwdataHand(i).bl_data(:,:,oddball_freq_dx([17:20])),3);
+% end;
 
 %% NEXT, without WN2
-mean_oddball_wn2excl_hand(1).mean_oddball_hand = ...
-    mean_oddball_hand(1).mean_oddball_hand;
+% mean_oddball_wn2excl_hand(1).mean_oddball_hand = ...
+%     mean_oddball_hand(1).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(2).mean_oddball_hand = ...
+%     mean_oddball_hand(3).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(3).mean_oddball_hand = ...
+%     mean_oddball_hand(4).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(4).mean_oddball_hand = ...
+%     mean_oddball_hand(5).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(5).mean_oddball_hand = ...
+%     mean_oddball_hand(6).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(6).mean_oddball_hand = ...
+%     mean_oddball_hand(7).mean_oddball_hand;
+% 
+% mean_oddball_wn2excl_hand(7).mean_oddball_hand = ...
+%     mean_oddball_hand(8).mean_oddball_hand;
 
-mean_oddball_wn2excl_hand(2).mean_oddball_hand = ...
-    mean_oddball_hand(3).mean_oddball_hand;
-
-mean_oddball_wn2excl_hand(3).mean_oddball_hand = ...
-    mean_oddball_hand(4).mean_oddball_hand;
-
-mean_oddball_wn2excl_hand(4).mean_oddball_hand = ...
-    mean_oddball_hand(5).mean_oddball_hand;
-
-mean_oddball_wn2excl_hand(5).mean_oddball_hand = ...
-    mean_oddball_hand(6).mean_oddball_hand;
-
-mean_oddball_wn2excl_hand(6).mean_oddball_hand = ...
-    mean_oddball_hand(7).mean_oddball_hand;
-
-mean_oddball_wn2excl_hand(7).mean_oddball_hand = ...
-    mean_oddball_hand(8).mean_oddball_hand;
-
-save('mean_oddball_wn2excl_hand_1509.mat','mean_oddball_wn2excl_hand');
 
 %%
-% for i = 1:8
-%     grand_avg_oddball_hand(i) = mean(mean_oddball_hand(i).mean_oddball_hand);
-%     std_oddball_hand(i) = std(mean_oddball_hand(i).mean_oddball_hand);
-% end
 scatter([1:8],Dsum(1,:));  %,'FaceColor',[24, 116, 205]/255);
 ylabel('Envelope dissimuilarity (AU)','FontSize',18);
 xlabel('Spectrotemporal sequence','FontSize',18);
@@ -364,7 +452,7 @@ set(gca,'XTickLabel',l,'FontSize',16);
 % er = errorbar([1:8],grand_avg_oddball_hand,std_oddball_hand,...
 %     'LineStyle','none','Color',[0 0 0]);
 
-%%
+%% load the 8 individual A and B Hilbert-transformed stimuli
 for n=1:8;
     [Ah Ad]=CLW_load(['hilTranA' num2str(n)]);
     [Bh Bd]=CLW_load(['hilTranB' num2str(n)]);
@@ -374,11 +462,9 @@ for n=1:8;
     
     D(n,:)=abs(B-A);
     Dsum(n)=sum(D(n,:));
-    Dsum_onset(n)=sum(D(n,1:1837));
+    Dsum_onset(n)=sum(D(n,1:2210));
 end;
-% 
-Dsum = repmat(Dsum,17,1);
-Dsum_onset= repmat(Dsum_onset,17,1);
+%
 
 wn1hand = mean_oddball_hand(1).mean_oddball_hand;
 wn2hand = mean_oddball_hand(2).mean_oddball_hand;
@@ -389,17 +475,9 @@ wn6hand = mean_oddball_hand(6).mean_oddball_hand;
 wn7hand = mean_oddball_hand(7).mean_oddball_hand;
 wn8hand = mean_oddball_hand(8).mean_oddball_hand;
 oddball_allHand = [wn1hand wn2hand wn3hand wn4hand wn5hand wn6hand wn7hand wn8hand];
-oddball_hand_excl_Wn2 = [wn1hand wn3hand wn4hand wn5hand wn6hand wn7hand wn8hand];
-
-Dsum_excl_wn2 = Dsum(1,[1 3:8]);
-Dsum_excl_wn2  = repmat(Dsum_excl_wn2, 17,1);
-
-%% correlation with wn2
-[Rhandwn2,Phandwn2]= corrcoef(Dsum(:,:),oddball_allHand(:,:));
-
-%% correlation without wn2
-[Rhand_excl_wn2,Phand_excl_wn2]= corrcoef(Dsum(:,[1 3:8]),oddball_allHand(:,[1 3:8]));
+%oddball_hand_excl_Wn2 = [wn1hand wn3hand wn4hand wn5hand wn6hand wn7hand wn8hand];
 
 
-filename = 'analysis_individual_wn_trials_hand1509.mat';
+%%
+filename = 'analysis_individual_wn_trials_hand3010.mat';
 save (filename, '-v7.3');
