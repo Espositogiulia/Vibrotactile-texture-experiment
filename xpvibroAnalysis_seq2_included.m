@@ -59,11 +59,11 @@ for i=1:4
     lwdata(i).chanavg_avg=squeeze(mean(lwdata(i).avg,1));
     lwdata(i).chanavg_avg_bl=squeeze(mean(lwdata(i).avg_bl,1));
     lwdata(i).chanavg_bl=squeeze(mean(lwdata(i).bl_data,2));
-    lwdata(i).chanavg_Z=squeeze(mean(lwdata(i).Z_data,2));   
+    lwdata(i).chanavg_Z=squeeze(mean(lwdata(i).Z_data,2));
     lwdata(i).chanavg=squeeze(mean(lwdata(i).data,2));
 end;
 
-%% zscore of average amplitude 
+%% zscore of average amplitude
 start_bin=3; %to exclude the first two neighbouring bins
 end_bin=start_bin+12; %to include the 12 neighbouring bins
 
@@ -80,7 +80,7 @@ for i=1:4;
             mean_tpy=mean(tpy);
             SD_tpy=std(tpy);
             lwdata(i).bl_avg(channelpos,dx)=lwdata(i).avg(channelpos,dx)-mean_tpy;
-           lwdata(i).Z_avg(channelpos,dx)=(lwdata(i).avg(channelpos,dx)-mean_tpy)/SD_tpy;
+            lwdata(i).Z_avg(channelpos,dx)=(lwdata(i).avg(channelpos,dx)-mean_tpy)/SD_tpy;
         end;
     end;
     lwdata(i).chanvg_Z_avg=mean(lwdata(i).Z_avg,1);
@@ -134,7 +134,6 @@ results.oddball_freq=oddball_freq;
 results.base_freq_dx=base_freq_dx;
 results.oddball_freq_dx=oddball_freq_dx;
 
-
 %% ttests to determine whether or not there is a periodic response
 
 for i=1:4;
@@ -155,7 +154,7 @@ for i=1:4;
     lwdata(i).ttest.mean_oddball_chan_avg_bl=mean_tp_oddball;
     lwdata(i).ttest.oddball_significant=a;
     lwdata(i).ttest.oddball_pvalue=b;
- 
+    
 end;
 
 %% ttests at each frequency
@@ -176,51 +175,20 @@ for i=1:4;
     end;
 end;
 
-%% extra plot
-% for i=1:4;
-%     tpBase=[];
-%     tpOdd=[];
-%     for epochpos= 1:17
-%         for channelpos=1:64
-%             %baseline_corrected amplitude at all base frequency harmonics, averaged across all channels
-%             %base frequencies
-%             for j=1:length(base_freq_dx)
-%                 tpBase(epochpos,channelpos,j,1:2)=squeeze(lwdata(i).bl_data(epochpos,channelpos,base_freq_dx(j)));
-%             end;
-%             %oddball frequencies
-%             for j=1:length(oddball_freq_dx)
-%                 tpOdd(epochpos,channelpos,j,1:2)=squeeze(lwdata(i).bl_data(epochpos,channelpos,oddball_freq_dx(j)));
-%             end;
-%         end
-%     end
-%     lwdata(i).bl_data_avg_harm_base=squeeze(mean(tpBase,3));
-%     lwdata(i).bl_data_avg_harm_oddball=squeeze(mean(tpOdd,3));
-% end
-% 
-% base_hand_s2=lwdata(1).bl_data_avg_harm_base;
-% base_foot_s2=lwdata(2).bl_data_avg_harm_base;
-% base_hand_s4=lwdata(3).bl_data_avg_harm_base;
-% base_foot_s4=lwdata(4).bl_data_avg_harm_base;
-% oddball_hand_s2=lwdata(1).bl_data_avg_harm_oddball;
-% oddball_foot_s2=lwdata(2).bl_data_avg_harm_oddball;
-% oddball_hand_s4=lwdata(3).bl_data_avg_harm_oddball;
-% oddball_foot_s4=lwdata(4).bl_data_avg_harm_oddball;
-
-
 
 %% find frequencies having Z score > threshold
 Z_threshold=1.64;
 start_bin=3; %to exclude the first two neighbouring bins
 end_bin=start_bin+12; %to include the 12 neighbouring bins
-% 
-% 
+%
+%
 % %compute average amplitude spectrum across all conditions
 tp=[];
 for i=1:4;
     tp(:,i)=lwdata(i).chanavg_avg;
 end;
 avg_tp=mean(tp,2);
-% 
+%
 % %compute Z score using neighbouring bins
 num_bins=length(avg_tp);
 for dx=1:num_bins;
@@ -240,17 +208,17 @@ results.Z_avgALL_chanavg_avg=z_avg_tp;
 %% plot spectra and topogtaphies (averaged across subjects and channels with results of ttest
 titles= {'Frequency/intensity contrast (hand)' 'Frequency/intensity contrast (foot)' 'Spectrotemporal contrast (hand)' 'Spectrotemporal contrast (foot)'};
 for i = 1:4
-maxYamp(i) = ceil(max(lwdata(i).chanavg_avg_bl(1,12:1921))*100)/100; % to get ylim for each subplot
+    maxYamp(i) = ceil(max(lwdata(i).chanavg_avg_bl(1,12:1921))*100)/100; % to get ylim for each subplot
 end
 
-positions = zeros(4,4); % to position each subplot 
+positions = zeros(4,4); % to position each subplot
 positions(1,2) = 0.78;
 for i = 1:4
     positions(i,1) = 0.1;
     positions(i,3) = 0.85;
     positions(i,4) = 0.2;
     if i>1
-    positions(i,2) = positions(i-1,2)-0.23;
+        positions(i,2) = positions(i-1,2)-0.23;
     end
 end
 
@@ -275,44 +243,115 @@ for i=1:4;
     lwdata(i).mean_oddball_signal=mean(lwdata(i).oddball_signal,2);
 end;
 
-%set limits for colorbars
+% average hand spectrotemporal responses across clusters of harmonics to
+% look at topography
+lwdata(3).bl_avg_cluster1=mean(lwdata(3).bl_avg(:,oddball_freq_dx([1:4])),2);
+lwdata(3).bl_avg_cluster2=mean(lwdata(3).bl_avg(:,oddball_freq_dx([5:8])),2);
+lwdata(3).bl_avg_cluster3=mean(lwdata(3).bl_avg(:,oddball_freq_dx([9:12])),2);
+lwdata(3).bl_avg_cluster4=mean(lwdata(3).bl_avg(:,oddball_freq_dx([13:16])),2);
+lwdata(3).bl_avg_cluster5=mean(lwdata(3).bl_avg(:,oddball_freq_dx([17:20])),2);
+
+lwdata(4).bl_avg_cluster1=mean(lwdata(4).bl_avg(:,oddball_freq_dx([1:4])),2);
+lwdata(4).bl_avg_cluster2=mean(lwdata(4).bl_avg(:,oddball_freq_dx([5:8])),2);
+lwdata(4).bl_avg_cluster3=mean(lwdata(4).bl_avg(:,oddball_freq_dx([9:12])),2);
+lwdata(4).bl_avg_cluster4=mean(lwdata(4).bl_avg(:,oddball_freq_dx([13:16])),2);
+lwdata(4).bl_avg_cluster5=mean(lwdata(4).bl_avg(:,oddball_freq_dx([17:20])),2);
+
+harm_clusters_hand = [lwdata(3).bl_avg_cluster1 lwdata(3).bl_avg_cluster2 lwdata(3).bl_avg_cluster3 lwdata(3).bl_avg_cluster4 lwdata(3).bl_avg_cluster5];
+min_clust_hand = min(harm_clusters_hand);
+max_clust_hand = max(harm_clusters_hand);
+
+harm_clusters_foot = [lwdata(4).bl_avg_cluster1 lwdata(4).bl_avg_cluster2 lwdata(4).bl_avg_cluster3 lwdata(4).bl_avg_cluster4 lwdata(4).bl_avg_cluster5];
+min_clust_foot = min(harm_clusters_foot);
+max_clust_foot = max(harm_clusters_foot);
+
+
+% Define subplot properties
+subplotWidth = 0.18;  % Adjust the width of each subplot
+subplotHeight = 0.7;  % Adjust the height of each subplot
+subplotSpacing = 0.02;  % Adjust the spacing between subplots
+
+% Loop through the clusters and create subplots - hand
+for i = 1:5
+    % Calculate the position of the current subplot
+    subplotX = (i - 1) * (subplotWidth + subplotSpacing) + 0.05;
+    
+    % Create subplot
+    subplot('Position', [subplotX, 0.1, subplotWidth, subplotHeight]);
+    
+    % Plot the topoplot for the current cluster
+    CLW_topoplot_vector(lwdata(3).header, lwdata(3).(['bl_avg_cluster' num2str(i)]), 'maplimits', [min_clust_hand(i) max_clust_hand(i)]);
+    
+    % Add colorbar
+    cB = colorbar;
+    set(cB, 'ylim', [min_clust_hand(i) max_clust_hand(i)]);
+    set(cB, 'FontSize', 16);
+      ylabel(cB,'\muV','rotation',0);
+    
+    % Clear colorbar variable
+    clear cB;
+end
+
+% Loop through the clusters and create subplots - foot
+for i = 1:5
+    % Calculate the position of the current subplot
+    subplotX = (i - 1) * (subplotWidth + subplotSpacing) + 0.05;
+    
+    % Create subplot
+    subplot('Position', [subplotX, 0.1, subplotWidth, subplotHeight]);
+    
+    % Plot the topoplot for the current cluster
+    CLW_topoplot_vector(lwdata(4).header, lwdata(4).(['bl_avg_cluster' num2str(i)]), 'maplimits', [min_clust_foot(i) max_clust_foot(i)]);
+    
+    % Add colorbar
+    cB = colorbar;
+    set(cB, 'ylim', [min_clust_foot(i) max_clust_foot(i)]);
+    set(cB, 'FontSize', 16);
+      ylabel(cB,'\muV','rotation',0);
+    
+    % Clear colorbar variable
+    clear cB;
+end
+
+
+%% set limits for colorbars
 for i = 1:4
-maxTopoAmpBase(i) = ceil(max(lwdata(i).mean_base_signal)*100)/100; % to get ylim for each subplot
+    maxTopoAmpBase(i) = ceil(max(lwdata(i).mean_base_signal)*100)/100; % to get ylim for each subplot
 end
 
 for i = 1:4
-minTopoAmpBase(i) = min(lwdata(i).mean_base_signal)*100/100; % to get ylim for each subplot
+    minTopoAmpBase(i) = min(lwdata(i).mean_base_signal)*100/100; % to get ylim for each subplot
 end
 
 for i = 1:4
-maxTopoAmpOddball(i) = ceil(max(lwdata(i).mean_oddball_signal)*100)/100; % to get ylim for each subplot
+    maxTopoAmpOddball(i) = ceil(max(lwdata(i).mean_oddball_signal)*100)/100; % to get ylim for each subplot
 end
 
 for i = 1:4
-minTopoAmpOddball(i) = min(lwdata(i).mean_oddball_signal); % to get ylim for each subplot
+    minTopoAmpOddball(i) = min(lwdata(i).mean_oddball_signal); % to get ylim for each subplot
 end
 
 
 %topoplot of base response
-positionsTopoBase = zeros(4,4); % to position each subplot 
+positionsTopoBase = zeros(4,4); % to position each subplot
 positionsTopoBase(1,2) = 0.8;
 for i = 1:4
     positionsTopoBase(i,1) = 0.72;
     positionsTopoBase(i,3) = 0.13;
     positionsTopoBase(i,4) = 0.13;
     if i>1
-    positionsTopoBase(i,2) = positionsTopoBase(i-1,2)-0.23;
+        positionsTopoBase(i,2) = positionsTopoBase(i-1,2)-0.23;
     end
 end
 
-positionsTopoOddball = zeros(4,4); % to position each subplot 
+positionsTopoOddball = zeros(4,4); % to position each subplot
 positionsTopoOddball(1,2) = 0.8;
 for i = 1:4
     positionsTopoOddball(i,1) = 0.85;
     positionsTopoOddball(i,3) = 0.13;
     positionsTopoOddball(i,4) = 0.13;
     if i>1
-    positionsTopoOddball(i,2) = positionsTopoOddball(i-1,2)-0.23;
+        positionsTopoOddball(i,2) = positionsTopoOddball(i-1,2)-0.23;
     end
 end
 
@@ -353,9 +392,6 @@ for i=1:4;
     a = get(gca,'XTickLabel');
     set(gca,'XTickLabel',a,'fontsize',16)
     set(gca,'YTick',[0 maxYamp(i)]);
-%     if i <4
-%         set(gca, 'XTickLabel', [])
-%     end
 end;
 axes('visible','off')
 xlabel('Frequency (Hz)','FontSize',16','FontWeight','bold','Position',[0.5,-0.09,1])
@@ -370,15 +406,14 @@ set(gcf, 'Color', 'White');
 for i=1:4;
     %subplot(2,2,i);
     axes('Position',positionsTopoBase(i,:));
-   % if i == 1 || i == 2
+    % if i == 1 || i == 2
     title('Base response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
     CLW_topoplot_vector(lwdata(i).header,lwdata(i).mean_base_signal,'maplimits',[minTopoAmpBase(i) maxTopoAmpBase(i)]);
     cB = colorbar;
     %set(cB,'Location','WestOutside');
     set(cB, 'ylim', [minTopoAmpBase(i) maxTopoAmpBase(i)])
     set(cB,'FontSize',14);
-    ylabel(cB,'\muV','rotation',0, 'Position',[7 (minTopoAmpBase(i)+minTopoAmpBase(i)*0.1) 1]);
-  
+    ylabel(cB,'\muV','rotation',0, 'Position',[7 (minTopoAmpBase(i)+minTopoAmpBase(i)*0.1) 1]);    
 end;
 hold on;
 %topoplot of oddball response
@@ -386,17 +421,17 @@ hold on;
 for i=1:4;
     axes('Position',positionsTopoOddball(i,:));
     title('Oddball response','fontweight','bold','fontsize',14);
-
+    
     CLW_topoplot_vector(lwdata(i).header,lwdata(i).mean_oddball_signal,'maplimits',[minTopoAmpOddball(i) maxTopoAmpOddball(i)]);
     cO = colorbar;
     set(cO, 'ylim', [minTopoAmpOddball(i) maxTopoAmpOddball(i)]);
-   % set(cO,'Location','WestOutside');
+    % set(cO,'Location','WestOutside');
     set(cO,'FontSize',14);
     ylabel(cO,'\muV','rotation',0, 'Position',[7 (minTopoAmpOddball(i)+minTopoAmpOddball(i)*0.1) 1]);
 end;
 
 %% Topographical plot (Z-score data)
-% 
+%
 %find harmonics that were significant (ttest) in at least one condition
 idx_base=[];
 idx_oddball=[];
@@ -465,13 +500,13 @@ minTopoTemplateFoot = min(foot_template);
 %hand_noise
 a=find(stim_locations==1); %hand
 b=find(stim_type==2); %noise
-cB=intersect(a,b); 
+cB=intersect(a,b);
 hand_noise_base=mean(lwdata(cB).bl_data(:,:,results.sig_idx_base),3);
 hand_noise_oddball=mean(lwdata(cB).bl_data(:,:,results.sig_idx_oddball),3);
 %foot_noise
 a=find(stim_locations==2); %foot
 b=find(stim_type==2); %noise
-cB=intersect(a,b); 
+cB=intersect(a,b);
 foot_noise_base=mean(lwdata(cB).bl_data(:,:,results.sig_idx_base),3);
 foot_noise_oddball=mean(lwdata(cB).bl_data(:,:,results.sig_idx_oddball),3);
 
@@ -511,7 +546,7 @@ for i=1:length(hand_noise_base_hand_template)
     set(gca,'Position',[0.1 0.55 0.3 0.4]);
     set(gca,'XTick',[1 2]);
     set(gca,'XTickLabel',{'Homotopic', 'Heterotopic'});
-%     set(gca,XAxis
+    %     set(gca,XAxis
 end;
 a(1)=mean(hand_noise_base_hand_template);
 a(2)=mean(hand_noise_base_foot_template);
@@ -560,7 +595,7 @@ for i=1:length(hand_noise_base_hand_template)
     b(2)=2;
     plot(b,a,'Color',[24, 116, 205]/255);
     set(gca,'Position',[0.55 0.46 0.3 0.3]);
-  set(gca,'Position',[0.1 0.056 0.3 0.4])
+    set(gca,'Position',[0.1 0.056 0.3 0.4])
     set(gca,'XTick',[1 2]);
     set(gca,'XTickLabel',{'Homotopic', 'Heterotopic'});
 end;
@@ -609,20 +644,20 @@ axes('Position',[0.75,0.65,0.2,0.2]);
 CLW_topoplot_vector(lwdata(1).header,hand_template,'maplimits',[minTopoTemplateHand maxTopoTemplateHand]);
 title('Hand Template','FontSize',14,'FontWeight','Bold')
 cH = colorbar;
-    set(cH, 'ylim', [minTopoTemplateHand maxTopoTemplateHand])
-    set(cH,'FontSize',18);
-    ylabel(cH,'\muV','rotation',0, 'Position',[7 minTopoTemplateHand 1], 'FontSize',14);
+set(cH, 'ylim', [minTopoTemplateHand maxTopoTemplateHand])
+set(cH,'FontSize',18);
+ylabel(cH,'\muV','rotation',0, 'Position',[7 minTopoTemplateHand 1], 'FontSize',14);
 %subplot(1,2,2);
 hold on
 axes('Position',[0.75,0.156,0.2,0.2]);
 CLW_topoplot_vector(lwdata(1).header,foot_template,'maplimits',[minTopoTemplateFoot maxTopoTemplateFoot]);
 title('Foot Template','FontSize',14,'FontWeight','Bold')
 cF = colorbar;
-    set(cF, 'ylim', [minTopoTemplateFoot maxTopoTemplateFoot])
-    set(cF,'FontSize',18);
-    ylabel(cF,'\muV','rotation',0, 'Position',[7 minTopoTemplateFoot 1], 'FontSize',14);
-    
- axes('visible','off')
+set(cF, 'ylim', [minTopoTemplateFoot maxTopoTemplateFoot])
+set(cF,'FontSize',18);
+ylabel(cF,'\muV','rotation',0, 'Position',[7 minTopoTemplateFoot 1], 'FontSize',14);
+
+axes('visible','off')
 xlabel([]);
 ylabel('Amplitude (\muV)','FontSize',24,'FontWeight','bold','Position',[-0.1,0.5,1])
 set(gca, 'visible', 'off')
@@ -636,262 +671,9 @@ set(gcf, 'Color', 'White');
 [results.hand_noise_oddball_result,results.hand_noise_oddball_pvalue]=ttest(hand_noise_oddball_hand_template,hand_noise_oddball_foot_template, 'tail', 'right');
 [results.foot_noise_oddball_result,results.foot_noise_oddball_pvalue]=ttest(foot_noise_oddball_hand_template,foot_noise_oddball_foot_template, 'tail', 'left');
 
-%% Create ''mismatch tables''
-for i = 1:64
-    chanlocs= lwdata(1).header.chanlocs;
-end
-for i = 1:64
-chanlocs_all{i} = chanlocs(i).labels;
-end
-chanlocs_all = chanlocs_all';
-chanlocs_all = cell2table(chanlocs_all);
-
-hand_template_table = array2table(hand_template);
-hand_template_table=[hand_template_table chanlocs_all];
-hand_table_sorted = sortrows(hand_template_table,'hand_template','descend');
-hand_table_sorted.Properties.VariableNames ={'template','chanlocs'};
-
-
-foot_template_table = array2table(foot_template);
-foot_template_table=[foot_template_table chanlocs_all];
-foot_table_sorted = sortrows(foot_template_table,'foot_template','descend');
-foot_table_sorted.Properties.VariableNames ={'template','chanlocs'};
-
-%ismember(hand_table_sorted.chanlocs,foot_table_sorted.chanlocs,'chanlocs')
-
-hand_table_MM = hand_table_sorted(1:7,:);
-hand_template_MM =table2array(hand_table_MM(:,1));
-foot_table_MM = foot_table_sorted(1:7,:);
-foot_template_MM =table2array(foot_table_MM(:,1));
-% apply mismatch templates
-chanlocs_all.Properties.VariableNames ={'chanlocs'};
-[channelsH, iah ibh]= intersect(hand_table_sorted(:,2),chanlocs_all);
-[channelsF, iaf ibf]= intersect(foot_table_sorted(:,2),chanlocs_all);
-
-for i=1:size(hand_noise_base,1);
-    hand_noise_base_hand_template_MM(i)=sum(hand_noise_base(i,ibh)'.*hand_template_MM(iah));
-    hand_noise_base_foot_template_MM(i)=sum(hand_noise_base(i,ibf)'.*foot_template_MM(iaf));
-    foot_noise_base_hand_template_MM(i)=sum(foot_noise_base(i,ibh)'.*hand_template_MM(iah));
-    foot_noise_base_foot_template_MM(i)=sum(foot_noise_base(i,ibf)'.*foot_template_MM(iaf));
-end;
-
-for i=1:size(hand_noise_oddball,1);
-    hand_noise_oddball_hand_template_MM(i)=sum(hand_noise_oddball(i,ibh)'.*hand_template_MM(iah));
-    hand_noise_oddball_foot_template_MM(i)=sum(hand_noise_oddball(i,ibf)'.*foot_template_MM(iaf));
-    foot_noise_oddball_hand_template_MM(i)=sum(foot_noise_oddball(i,ibh)'.*hand_template_MM(iah));
-    foot_noise_oddball_foot_template_MM(i)=sum(foot_noise_oddball(i,ibf)'.*foot_template_MM(iaf));
-end;
-
-
-%% New plot to compare FFT of EEG and of signal
-%spectrotemporal hand
-sig_base_freqs_3=results.base_freq(find(lwdata(3).ttest_base_freq));
-sig_oddball_freqs_3=results.oddball_freq(find(lwdata(3).ttest_oddball_freq));
-sig_base_amps_3=lwdata(3).chanavg_avg_bl(results.base_freq_dx(find(lwdata(3).ttest_base_freq)));
-sig_oddball_amps_3= lwdata(3).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(3).ttest_oddball_freq)));
-
-subplot(2,1,1);
-hold on
-plot(tpx,lwdata(3).chanavg_avg_bl,'k-');
-xlim([0.25 40]);
-scatter(sig_base_freqs_3,sig_base_amps_3,'MarkerEdgeColor',[24, 116, 205]/255,'MarkerFaceColor',[24, 116, 205]/255);
-stem(tpx(results.base_freq_dx(find(lwdata(3).ttest_base_freq))),...
-        lwdata(3).chanavg_avg_bl(results.base_freq_dx(find(lwdata(3).ttest_base_freq))),...
-        'Color',[24, 116, 205]/255,'marker','none','LineWidth',2.5);
-    
-scatter(sig_oddball_freqs_3,sig_oddball_amps_3,'MarkerEdgeColor',[238, 44, 44]/255,'MarkerFaceColor',[238, 44, 44]/255);
-stem(tpx(results.oddball_freq_dx(find(lwdata(3).ttest_oddball_freq))),...
-        lwdata(3).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(3).ttest_oddball_freq))),...
-        'Color', [238, 44, 44]/255,'marker','none','LineWidth',2.5);
-    ylim([0,0.06]);
-title('Spectrotemporal contrast (Hand)','FontWeight','bold','FontSize',20);
-%spectrotemporal foot
-sig_base_freqs_4=results.base_freq(find(lwdata(4).ttest_base_freq));
-sig_oddball_freqs_4=results.oddball_freq(find(lwdata(4).ttest_oddball_freq));
-sig_base_amps_4=lwdata(4).chanavg_avg_bl(results.base_freq_dx(find(lwdata(4).ttest_base_freq)));
-sig_oddball_amps_4= lwdata(4).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(4).ttest_oddball_freq)));
-
-subplot(2,1,2);
-plot(tpx,lwdata(4).chanavg_avg_bl,'k-');
-box off;
-xlim([0.25 40]);
-hold on
-scatter(sig_base_freqs_4,sig_base_amps_4,'MarkerEdgeColor',[24, 116, 205]/255,'MarkerFaceColor',[24, 116, 205]/255);
-hold on;
-stem(tpx(results.base_freq_dx(find(lwdata(4).ttest_base_freq))),...
-        lwdata(4).chanavg_avg_bl(results.base_freq_dx(find(lwdata(4).ttest_base_freq))),...
-        'Color',[24, 116, 205]/255,'marker','none','LineWidth',2.5);
-hold on    
-scatter(sig_oddball_freqs_4,sig_oddball_amps_4,'MarkerEdgeColor',[238, 44, 44]/255,'MarkerFaceColor',[238, 44, 44]/255);
-stem(tpx(results.oddball_freq_dx(find(lwdata(4).ttest_oddball_freq))),...
-        lwdata(4).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(4).ttest_oddball_freq))),...
-        'Color', [238, 44, 44]/255,'marker','none','LineWidth',2.5);
-ylim([0,0.06]);
-title('Spectrotemporal contrast (Foot)','FontWeight','bold','FontSize',20);
-    
-%topoplots foot
-axes('Position',[0.7 0.25 0.14 0.14]);   
-
-title('Base response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(4).header,lwdata(4).mean_base_signal,'maplimits',[minTopoAmpBase(4) maxTopoAmpBase(4)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpBase(4) maxTopoAmpBase(4)])
-    set(cB,'FontSize',14);
-    
-axes('Position',[0.85 0.25 0.14 0.14]);    
-title('Oddball response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(4).header,lwdata(4).mean_oddball_signal,'maplimits',[minTopoAmpOddball(4) maxTopoAmpOddball(4)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpOddball(4) maxTopoAmpOddball(4)])
-    set(cB,'FontSize',14);
-% signal
-    
-% subplot(3,1,3);
-% plot(tpxSignal,signalFFT.data,'k-');
-% box off;
-% hold on;
-% xlim([0.25 40]);
-% stem(sig_base_freqs_3,signalFFT.data(base_freq_dx),...
-%         'Color',[24, 116, 205]/255,'marker','none','LineWidth',2.5);
-%     hold on
-%     
-% scatter(base_freq,signalFFT.data(base_freq_dx(find(lwdata(3).ttest_base_freq))),'MarkerEdgeColor',[24, 116, 205]/255,'MarkerFaceColor',[24, 116, 205]/255);
-% 
-% hold on
-% stem(oddball_freq,signalFFT.data(oddball_freq_dx),...
-%         'Color',[238, 44, 44]/255,'marker','none','LineWidth',2.5);
-% scatter(oddball_freq,signalFFT.data(oddball_freq_dx),'MarkerEdgeColor',[238, 44, 44]/255,'MarkerFaceColor',[238, 44, 44]/255);
-% box off
-% ylim([0,0.06]);
-% title('Spectrum of averaged spectrotemporal sequences envelopes','FontWeight','bold','FontSize',20);
-% topoplots
-axes('Position',[0.7 0.65 0.14 0.14]);   
-
-title('Base response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(3).header,lwdata(3).mean_base_signal,'maplimits',[minTopoAmpBase(3) maxTopoAmpBase(3)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpBase(3) maxTopoAmpBase(3)])
-    set(cB,'FontSize',14);
-    
-axes('Position',[0.85 0.65 0.14 0.14]);    
-title('Oddball response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(3).header,lwdata(3).mean_oddball_signal,'maplimits',[minTopoAmpOddball(3) maxTopoAmpOddball(3)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpOddball(3) maxTopoAmpOddball(3)])
-    set(cB,'FontSize',14);
-hold on         
-axes('visible','off')
-xlabel('Frequency (Hz)','FontSize',16','FontWeight','bold','Position',[0.5,-0.04,1])
-ylabel('Amplitude (\muV)','FontSize',16,'FontWeight','bold','Position',[-0.04,0.5,1])
-set(gca, 'visible', 'off')
-set(findall(gca, 'type', 'text'), 'visible', 'on')
-set(gcf, 'Color', 'White');
-
 %%
-%% New plot to compare FFT of EEG and of signal
-%spectrotemporal hand
-sig_base_freqs_1=results.base_freq(find(lwdata(1).ttest_base_freq));
-sig_oddball_freqs_1=results.oddball_freq(find(lwdata(1).ttest_oddball_freq));
-sig_base_amps_1=lwdata(1).chanavg_avg_bl(results.base_freq_dx(find(lwdata(1).ttest_base_freq)));
-sig_oddball_amps_1= lwdata(1).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(1).ttest_oddball_freq)));
-figure;
-subplot(2,1,1);
-hold on
-plot(tpx,lwdata(1).chanavg_avg_bl,'k-');
-xlim([0.25 40]);
-scatter(sig_base_freqs_1,sig_base_amps_1,'MarkerEdgeColor',[24, 116, 205]/255,'MarkerFaceColor',[24, 116, 205]/255);
-stem(tpx(results.base_freq_dx(find(lwdata(1).ttest_base_freq))),...
-        lwdata(1).chanavg_avg_bl(results.base_freq_dx(find(lwdata(1).ttest_base_freq))),...
-        'Color',[24, 116, 205]/255,'marker','none','LineWidth',2.5);
-    
-scatter(sig_oddball_freqs_1,sig_oddball_amps_1,'MarkerEdgeColor',[238, 44, 44]/255,'MarkerFaceColor',[238, 44, 44]/255);
-stem(tpx(results.oddball_freq_dx(find(lwdata(1).ttest_oddball_freq))),...
-        lwdata(1).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(1).ttest_oddball_freq))),...
-        'Color', [238, 44, 44]/255,'marker','none','LineWidth',2.5);
-    ylim([0,0.13]);
-title('Frequency/intensity contrast (Hand)','FontWeight','bold','FontSize',20);
-%spectrotemporal foot
-sig_base_freqs_2=results.base_freq(find(lwdata(2).ttest_base_freq));
-sig_oddball_freqs_2=results.oddball_freq(find(lwdata(2).ttest_oddball_freq));
-sig_base_amps_2=lwdata(2).chanavg_avg_bl(results.base_freq_dx(find(lwdata(2).ttest_base_freq)));
-sig_oddball_amps_2= lwdata(2).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(2).ttest_oddball_freq)));
-
-subplot(2,1,2);
-plot(tpx,lwdata(2).chanavg_avg_bl,'k-');
-box off;
-xlim([0.25 40]);
-hold on
-scatter(sig_base_freqs_2,sig_base_amps_2,'MarkerEdgeColor',[24, 116, 205]/255,'MarkerFaceColor',[24, 116, 205]/255);
-hold on;
-stem(tpx(results.base_freq_dx(find(lwdata(2).ttest_base_freq))),...
-        lwdata(2).chanavg_avg_bl(results.base_freq_dx(find(lwdata(2).ttest_base_freq))),...
-        'Color',[24, 116, 205]/255,'marker','none','LineWidth',2.5);
-hold on    
-scatter(sig_oddball_freqs_2,sig_oddball_amps_2,'MarkerEdgeColor',[238, 44, 44]/255,'MarkerFaceColor',[238, 44, 44]/255);
-stem(tpx(results.oddball_freq_dx(find(lwdata(2).ttest_oddball_freq))),...
-        lwdata(2).chanavg_avg_bl(results.oddball_freq_dx(find(lwdata(2).ttest_oddball_freq))),...
-        'Color', [238, 44, 44]/255,'marker','none','LineWidth',2.5);
-ylim([0,0.06]);
-title('Frequncy/intensity contrast (Foot)','FontWeight','bold','FontSize',20);
-    
-%topoplots foot
-axes('Position',[0.7 0.25 0.14 0.14]);   
-
-title('Base response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(2).header,lwdata(2).mean_base_signal,'maplimits',[minTopoAmpBase(2) maxTopoAmpBase(2)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpBase(2) maxTopoAmpBase(2)])
-    set(cB,'FontSize',14);
-    
-axes('Position',[0.85 0.25 0.14 0.14]);    
-title('Oddball response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(4).header,lwdata(2).mean_oddball_signal,'maplimits',[minTopoAmpOddball(2) maxTopoAmpOddball(2)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpOddball(2) maxTopoAmpOddball(2)])
-    set(cB,'FontSize',14);
-
-axes('Position',[0.7 0.65 0.14 0.14]);   
-
-title('Base response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(1).header,lwdata(1).mean_base_signal,'maplimits',[minTopoAmpBase(1) maxTopoAmpBase(1)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpBase(1) maxTopoAmpBase(1)])
-    set(cB,'FontSize',14);
-    
-axes('Position',[0.85 0.65 0.14 0.14]);    
-title('Oddball response','fontweight','bold','fontsize',14,'Position',[0 0.713 5]);
-    CLW_topoplot_vector(lwdata(1).header,lwdata(1).mean_oddball_signal,'maplimits',[minTopoAmpOddball(1) maxTopoAmpOddball(1)]);
-    cB = colorbar;
-    %set(cB,'Location','WestOutside');
-    set(cB, 'ylim', [minTopoAmpOddball(1) maxTopoAmpOddball(1)])
-    set(cB,'FontSize',14);
-hold on         
-axes('visible','off')
-xlabel('Frequency (Hz)','FontSize',16','FontWeight','bold','Position',[0.5,-0.04,1])
-ylabel('Amplitude (\muV)','FontSize',16,'FontWeight','bold','Position',[-0.04,0.5,1])
-set(gca, 'visible', 'off')
-set(findall(gca, 'type', 'text'), 'visible', 'on')
-set(gcf, 'Color', 'White');
-%%
-
-base_signal_sign= signalFFT.data(base_freq_dx);%(find(lwdata(3).ttest_base_freq)));
-oddball_signal_sign=signalFFT.data(oddball_freq_dx);%(find(lwdata(3).ttest_base_freq)));
-ratio_signal = mean(oddball_signal_sign)/mean(base_signal_sign);
-ratio_signal = mean(oddball_signal_sign)/mean(base_signal_sign);
-ratio_hand= mean(sig_oddball_amps_3)/mean(sig_base_amps_3);
-ratio_foot= mean(sig_oddball_amps_4)/mean(sig_base_amps_4);
-
-%%
-filename = 'analysis_group_level_wn1_included_1809.mat';
+filename = 'analysis_group_level_wn1_included_3010.mat';
 save (filename, '-v7.3');
-
 
 %%
 base_data_anova_incl_wn2 = [hand_noise_base_hand_template' hand_noise_base_foot_template' foot_noise_base_foot_template' foot_noise_base_hand_template'];
@@ -899,5 +681,5 @@ oddball_data_anova_incl_wn2 = [hand_noise_oddball_hand_template' hand_noise_oddb
 base_data_anova_incl_wn2=array2table(base_data_anova_incl_wn2);
 oddball_data_anova_incl_wn2=array2table(oddball_data_anova_incl_wn2);
 
-writetable(base_data_anova_incl_wn2,'base_data_anova_wn2_incl_1509.csv')
-writetable(oddball_data_anova_incl_wn2,'oddball_data_anova_wn2_incl_1509.csv')
+writetable(base_data_anova_incl_wn2,'base_data_anova_wn2_incl_3011.csv')
+writetable(oddball_data_anova_incl_wn2,'oddball_data_anova_wn2_incl_3011.csv')
