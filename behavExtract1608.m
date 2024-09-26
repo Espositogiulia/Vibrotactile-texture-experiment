@@ -2,7 +2,7 @@
 % import all behavioural results .mat file (4/participant - 2xfoot and 2xhand)
 clear;
 clc;
-%cd('C:\data\gesposito\behavioural results');
+cd('C:\data\xvibro\behavioural');
 files = dir('*.mat'); % get all mat files in folder
 files = natsortfiles(files); %need to add natsortfiles to path for this to work
 
@@ -16,8 +16,10 @@ dataFoot = struct2cell(contFoot); % convert to cell to access the responses
 dataFoot = squeeze(dataFoot); % get 2D instead of 3D structure
 dataFoot = cell2mat(dataFoot); % convert to double to create array of foot responses (same order as trials)
 
-randTrialsFoot = struct2cell(load(files(65).name)); 
-                                                    
+randTrialsFoot = struct2cell(load(files(65).name)); % this is not in the same order as dataFoot!! - sorted for now - the problem won't be there once I have all ppts
+                                                    % row 37 of structure
+                                                    % contains foot trials
+                                                    % for now!! 
 randTrialsFoot = cell2mat(randTrialsFoot);  % conver to double to create array of foot trials
 
 trialsFoot1 = randTrialsFoot(1:2,:); % all this will be unnecessary once I have the whole dataset, some data are on cookie and I need to copy it
@@ -74,37 +76,37 @@ end
 clear i;
 
 ppt1FreqFoot = dataFreqFootOnly(1:2,:); % I need to put 2 rows (ie 2 blocks for 1 ppt) together in one single row
-ppt1FreqFoot = reshape(ppt1FreqFoot,1,16);
+%ppt1FreqFoot = reshape(ppt1FreqFoot,1,16);
 ppt2FreqFoot = dataFreqFootOnly(3:4,:);
-ppt2FreqFoot = reshape(ppt2FreqFoot,1,16);
+%ppt2FreqFoot = reshape(ppt2FreqFoot,1,16);
 ppt3FreqFoot = dataFreqFootOnly(5:6,:);
-ppt3FreqFoot = reshape(ppt3FreqFoot,1,16);
+%ppt3FreqFoot = reshape(ppt3FreqFoot,1,16);
  ppt4FreqFoot = dataFreqFootOnly(7:8,:);
- ppt4FreqFoot = reshape(ppt4FreqFoot,1,16);
+ %ppt4FreqFoot = reshape(ppt4FreqFoot,1,16);
 ppt5FreqFoot = dataFreqFootOnly(9:10,:);
-ppt5FreqFoot = reshape(ppt5FreqFoot,1,16);
+%ppt5FreqFoot = reshape(ppt5FreqFoot,1,16);
 ppt6FreqFoot = dataFreqFootOnly(11:12,:);
-ppt6FreqFoot = reshape(ppt6FreqFoot,1,16);
+%ppt6FreqFoot = reshape(ppt6FreqFoot,1,16);
 ppt7FreqFoot = dataFreqFootOnly(13:14,:);
-ppt7FreqFoot = reshape(ppt7FreqFoot,1,16);
+%ppt7FreqFoot = reshape(ppt7FreqFoot,1,16);
 ppt8FreqFoot = dataFreqFootOnly(15:16,:);
-ppt8FreqFoot = reshape(ppt8FreqFoot,1,16);
+%ppt8FreqFoot = reshape(ppt8FreqFoot,1,16);
 ppt9FreqFoot = dataFreqFootOnly(17:18,:);
-ppt9FreqFoot = reshape(ppt9FreqFoot,1,16);
+%ppt9FreqFoot = reshape(ppt9FreqFoot,1,16);
 ppt10FreqFoot = dataFreqFootOnly(19:20,:);
-ppt10FreqFoot = reshape(ppt10FreqFoot,1,16);
+%ppt10FreqFoot = reshape(ppt10FreqFoot,1,16);
 ppt11FreqFoot = dataFreqFootOnly(21:22,:);
-ppt11FreqFoot = reshape(ppt11FreqFoot,1,16);
+%ppt11FreqFoot = reshape(ppt11FreqFoot,1,16);
 ppt12FreqFoot = dataFreqFootOnly(23:24,:);
-ppt12FreqFoot = reshape(ppt12FreqFoot,1,16);
+%ppt12FreqFoot = reshape(ppt12FreqFoot,1,16);
 ppt13FreqFoot = dataFreqFootOnly(25:26,:);
-ppt13FreqFoot = reshape(ppt13FreqFoot,1,16);
+%ppt13FreqFoot = reshape(ppt13FreqFoot,1,16);
 ppt14FreqFoot = dataFreqFootOnly(27:28,:);
-ppt14FreqFoot = reshape(ppt14FreqFoot,1,16);
+%ppt14FreqFoot = reshape(ppt14FreqFoot,1,16);
 ppt16FreqFoot = dataFreqFootOnly(29:30,:);
-ppt16FreqFoot = reshape(ppt16FreqFoot,1,16);
+%ppt16FreqFoot = reshape(ppt16FreqFoot,1,16);
 ppt17FreqFoot = dataFreqFootOnly(31:32,:);
-ppt17FreqFoot = reshape(ppt17FreqFoot,1,16);
+%ppt17FreqFoot = reshape(ppt17FreqFoot,1,16);
 
 dataAllFootFreq = [ppt1FreqFoot; ppt2FreqFoot; ppt3FreqFoot; ppt4FreqFoot; ...
     ppt5FreqFoot; ...
@@ -120,7 +122,7 @@ clear i;
 avgFreqFoot = mean(percFeltFootFreq,2); % total average
 sDevFreqFoot = std(percFeltFootFreq);
 %% white noise foot
-dataWnFootOnly = zeros(32,8);  % create an array to store 32 (2blocks x ppt - 32 rows, 16 ppts) x 8 (8 trials x block - 8 columns)
+dataWnFootOnly = zeros(32,8);  % create an array to store 18 (2blocks x ppt - 18 rows, 9 ppts) x 8 (8 trials x block - 8 columns)
 
 for i = 1:size(dataWnFoot,1)
 dataWnFootOnly(i,:) = rmmissing(dataWnFoot(i,:)); % remove NaN values to only get array with freq reponses
@@ -128,37 +130,37 @@ end
 clear i;
 
 ppt1WnFoot = dataWnFootOnly(1:2,:); % I need to put 2 rows (ie 2 blocks for 1 ppt) together in one single row
-ppt1WnFoot = reshape(ppt1WnFoot,1,16);
+%ppt1WnFoot = reshape(ppt1WnFoot,1,16); % there is a mistake here!!!!!!
 ppt2WnFoot = dataWnFootOnly(3:4,:);
-ppt2WnFoot = reshape(ppt2WnFoot,1,16);
+%ppt2WnFoot = reshape(ppt2WnFoot,1,16);
 ppt3WnFoot = dataWnFootOnly(5:6,:);
-ppt3WnFoot = reshape(ppt3WnFoot,1,16);
+%ppt3WnFoot = reshape(ppt3WnFoot,1,16);
  ppt4WnFoot = dataWnFootOnly(7:8,:);
- ppt4WnFoot = reshape(ppt4WnFoot,1,16);
+% ppt4WnFoot = reshape(ppt4WnFoot,1,16);
 ppt5WnFoot = dataWnFootOnly(9:10,:);
-ppt5WnFoot = reshape(ppt5WnFoot,1,16);
+%ppt5WnFoot = reshape(ppt5WnFoot,1,16);
 ppt6WnFoot = dataWnFootOnly(11:12,:);
-ppt6WnFoot = reshape(ppt6WnFoot,1,16);
+%ppt6WnFoot = reshape(ppt6WnFoot,1,16);
 ppt7WnFoot = dataWnFootOnly(13:14,:);
-ppt7WnFoot = reshape(ppt7WnFoot,1,16);
+%ppt7WnFoot = reshape(ppt7WnFoot,1,16);
 ppt8WnFoot = dataWnFootOnly(15:16,:);
-ppt8WnFoot = reshape(ppt8WnFoot,1,16);
+%ppt8WnFoot = reshape(ppt8WnFoot,1,16);
 ppt9WnFoot = dataWnFootOnly(17:18,:);
-ppt9WnFoot = reshape(ppt9WnFoot,1,16);
+%ppt9WnFoot = reshape(ppt9WnFoot,1,16);
 ppt10WnFoot = dataWnFootOnly(19:20,:);
-ppt10WnFoot = reshape(ppt10WnFoot,1,16);
+%ppt10WnFoot = reshape(ppt10WnFoot,1,16);
 ppt11WnFoot = dataWnFootOnly(21:22,:);
-ppt11WnFoot = reshape(ppt11WnFoot,1,16);
+%ppt11WnFoot = reshape(ppt11WnFoot,1,16);
 ppt12WnFoot = dataWnFootOnly(23:24,:);
-ppt12WnFoot = reshape(ppt12WnFoot,1,16);
+%ppt12WnFoot = reshape(ppt12WnFoot,1,16);
 ppt13WnFoot = dataWnFootOnly(25:26,:);
-ppt13WnFoot = reshape(ppt13WnFoot,1,16);
+%ppt13WnFoot = reshape(ppt13WnFoot,1,16);
 ppt14WnFoot = dataWnFootOnly(27:28,:);
-ppt14WnFoot = reshape(ppt14WnFoot,1,16);
-ppt16WnFoot = dataWnFootOnly(29:30,:);
-ppt16WnFoot = reshape(ppt16WnFoot,1,16);
-ppt17WnFoot = dataWnFootOnly(31:32,:);
-ppt17WnFoot = reshape(ppt17WnFoot,1,16);
+%ppt14WnFoot = reshape(ppt14WnFoot,1,16);
+ppt16WnFoot = dataWnFootOnly(29:30,:); % ppt 17
+%ppt16WnFoot = reshape(ppt16WnFoot,1,16);
+ppt17WnFoot = dataWnFootOnly(31:32,:); % ppt 18
+%ppt17WnFoot = reshape(ppt17WnFoot,1,16);
 
 dataAllFootWn = [ppt1WnFoot; ppt2WnFoot; ppt3WnFoot; ppt4WnFoot; ...
     ppt5WnFoot; ...
@@ -243,37 +245,37 @@ end
 clear i;
 
 ppt1FreqHand = dataFreqHandOnly(1:2,:); % I need to put 2 rows (ie 2 blocks for 1 ppt) together in one single row
-ppt1FreqHand = reshape(ppt1FreqHand,1,16);
+%ppt1FreqHand = reshape(ppt1FreqHand,1,16);
 ppt2FreqHand = dataFreqHandOnly(3:4,:);
-ppt2FreqHand = reshape(ppt2FreqHand,1,16);
+%ppt2FreqHand = reshape(ppt2FreqHand,1,16);
 ppt3FreqHand = dataFreqHandOnly(5:6,:);
-ppt3FreqHand = reshape(ppt3FreqHand,1,16);
+%ppt3FreqHand = reshape(ppt3FreqHand,1,16);
  ppt4FreqHand = dataFreqHandOnly(7:8,:);
- ppt4FreqHand = reshape(ppt4FreqHand,1,16);
+% ppt4FreqHand = reshape(ppt4FreqHand,1,16);
 ppt5FreqHand = dataFreqHandOnly(9:10,:);
-ppt5FreqHand = reshape(ppt5FreqHand,1,16);
+%ppt5FreqHand = reshape(ppt5FreqHand,1,16);
 ppt6FreqHand = dataFreqHandOnly(11:12,:);
-ppt6FreqHand = reshape(ppt6FreqHand,1,16);
+%ppt6FreqHand = reshape(ppt6FreqHand,1,16);
 ppt7FreqHand = dataFreqHandOnly(13:14,:);
-ppt7FreqHand = reshape(ppt7FreqHand,1,16);
+%ppt7FreqHand = reshape(ppt7FreqHand,1,16);
 ppt8FreqHand = dataFreqHandOnly(15:16,:);
-ppt8FreqHand = reshape(ppt8FreqHand,1,16);
+%ppt8FreqHand = reshape(ppt8FreqHand,1,16);
 ppt9FreqHand = dataFreqHandOnly(17:18,:);
-ppt9FreqHand = reshape(ppt9FreqHand,1,16);
+%ppt9FreqHand = reshape(ppt9FreqHand,1,16);
 ppt10FreqHand = dataFreqHandOnly(19:20,:);
-ppt10FreqHand = reshape(ppt10FreqHand,1,16);
+%ppt10FreqHand = reshape(ppt10FreqHand,1,16);
 ppt11FreqHand = dataFreqHandOnly(21:22,:);
-ppt11FreqHand = reshape(ppt11FreqHand,1,16);
+%ppt11FreqHand = reshape(ppt11FreqHand,1,16);
 ppt12FreqHand = dataFreqHandOnly(23:24,:);
-ppt12FreqHand = reshape(ppt12FreqHand,1,16);
+%ppt12FreqHand = reshape(ppt12FreqHand,1,16);
 ppt13FreqHand = dataFreqHandOnly(25:26,:);
-ppt13FreqHand = reshape(ppt13FreqHand,1,16);
+%ppt13FreqHand = reshape(ppt13FreqHand,1,16);
 ppt14FreqHand = dataFreqHandOnly(27:28,:);
-ppt14FreqHand = reshape(ppt14FreqHand,1,16);
+%ppt14FreqHand = reshape(ppt14FreqHand,1,16);
 ppt16FreqHand = dataFreqHandOnly(29:30,:);
-ppt16FreqHand = reshape(ppt16FreqHand,1,16);
+%ppt16FreqHand = reshape(ppt16FreqHand,1,16);
 ppt17FreqHand = dataFreqHandOnly(31:32,:);
-ppt17FreqHand = reshape(ppt17FreqHand,1,16);
+%ppt17FreqHand = reshape(ppt17FreqHand,1,16);
 
 dataAllHandFreq = [ppt1FreqHand; ppt2FreqHand; ppt3FreqHand; ppt4FreqHand; ...
     ppt5FreqHand; ...
@@ -298,37 +300,53 @@ end
 clear i;
 
 ppt1WnHand = dataWnHandOnly(1:2,:); % I need to put 2 rows (ie 2 blocks for 1 ppt) together in one single row
-ppt1WnHand = reshape(ppt1WnHand,1,16);
+ppt1WnHand = [ppt1WnHand(1,:) ppt1WnHand(2,:)];
+%ppt1WnHand = reshape(ppt1WnHand,1,16);
 ppt2WnHand = dataWnHandOnly(3:4,:);
-ppt2WnHand = reshape(ppt2WnHand,1,16);
+ppt2WnHand = [ppt2WnHand(1,:) ppt2WnHand(2,:)];
+%ppt2WnHand = reshape(ppt2WnHand,1,16);
 ppt3WnHand = dataWnHandOnly(5:6,:);
-ppt3WnHand = reshape(ppt3WnHand,1,16);
+ppt3WnHand = [ppt3WnHand(1,:) ppt3WnHand(2,:)];
+%ppt3WnHand = reshape(ppt3WnHand,1,16);
  ppt4WnHand = dataWnHandOnly(7:8,:);
- ppt4WnHand = reshape(ppt4WnHand,1,16);
+ ppt4WnHand = [ppt4WnHand(1,:) ppt4WnHand(2,:)];
+% ppt4WnHand = reshape(ppt4WnHand,1,16);
 ppt5WnHand = dataWnHandOnly(9:10,:);
-ppt5WnHand = reshape(ppt5WnHand,1,16);
+ppt5WnHand = [ppt5WnHand(1,:) ppt5WnHand(2,:)];
+%ppt5WnHand = reshape(ppt5WnHand,1,16);
 ppt6WnHand = dataWnHandOnly(11:12,:);
-ppt6WnHand = reshape(ppt6WnHand,1,16);
+ppt6WnHand = [ppt6WnHand(1,:) ppt6WnHand(2,:)];
+%ppt6WnHand = reshape(ppt6WnHand,1,16);
 ppt7WnHand = dataWnHandOnly(13:14,:);
-ppt7WnHand = reshape(ppt7WnHand,1,16);
+ppt7WnHand = [ppt7WnHand(1,:) ppt7WnHand(2,:)];
+%ppt7WnHand = reshape(ppt7WnHand,1,16);
 ppt8WnHand = dataWnHandOnly(15:16,:);
-ppt8WnHand = reshape(ppt8WnHand,1,16);
+ppt8WnHand = [ppt8WnHand(1,:) ppt8WnHand(2,:)];
+%ppt8WnHand = reshape(ppt8WnHand,1,16);
 ppt9WnHand = dataWnHandOnly(17:18,:);
-ppt9WnHand = reshape(ppt9WnHand,1,16);
+ppt9WnHand = [ppt9WnHand(1,:) ppt9WnHand(2,:)];
+%ppt9WnHand = reshape(ppt9WnHand,1,16);
 ppt10WnHand = dataWnHandOnly(19:20,:);
-ppt10WnHand = reshape(ppt10WnHand,1,16);
+ppt10WnHand = [ppt10WnHand(1,:) ppt10WnHand(2,:)];
+%ppt10WnHand = reshape(ppt10WnHand,1,16);
 ppt11WnHand = dataWnHandOnly(21:22,:);
-ppt11WnHand = reshape(ppt11WnHand,1,16);
+ppt11WnHand = [ppt11WnHand(1,:) ppt11WnHand(2,:)];
+%ppt11WnHand = reshape(ppt11WnHand,1,16);
 ppt12WnHand = dataWnHandOnly(23:24,:);
-ppt12WnHand = reshape(ppt12WnHand,1,16);
+ppt12WnHand = [ppt12WnHand(1,:) ppt12WnHand(2,:)];
+%ppt12WnHand = reshape(ppt12WnHand,1,16);
 ppt13WnHand = dataWnHandOnly(25:26,:);
-ppt13WnHand = reshape(ppt13WnHand,1,16);
+ppt13WnHand = [ppt13WnHand(1,:) ppt13WnHand(2,:)];
+%ppt13WnHand = reshape(ppt13WnHand,1,16);
 ppt14WnHand = dataWnHandOnly(27:28,:);
-ppt14WnHand = reshape(ppt14WnHand,1,16);
+ppt14WnHand = [ppt14WnHand(1,:) ppt14WnHand(2,:)];
+%ppt14WnHand = reshape(ppt14WnHand,1,16);
 ppt16WnHand = dataWnHandOnly(29:30,:);
-ppt16WnHand = reshape(ppt16WnHand,1,16);
+ppt16WnHand = [ppt16WnHand(1,:) ppt16WnHand(2,:)];
+%ppt16WnHand = reshape(ppt16WnHand,1,16);
 ppt17WnHand = dataWnHandOnly(31:32,:);
-ppt17WnHand = reshape(ppt17WnHand,1,16);
+ppt17WnHand = [ppt17WnHand(1,:) ppt17WnHand(2,:)];
+%ppt17WnHand = reshape(ppt17WnHand,1,16);
 
 dataAllHandWn = [ppt1WnHand; ppt2WnHand; ppt3WnHand; ppt4WnHand; 
     ppt5WnHand; ...
@@ -349,7 +367,7 @@ for i = 1:8
     sequence(i).resp=NaN(size(trialsHandSoFar));
 end
 
-for i = 1:size(trialsHandSoFar)
+for i = 1:size(trialsHandSoFar,1)
     for j = 1:size(trialsHandSoFar,2)
         if trialsHandSoFar(i,j)==9
         sequence(1).resp(i,j)= dataHand(i,j);
